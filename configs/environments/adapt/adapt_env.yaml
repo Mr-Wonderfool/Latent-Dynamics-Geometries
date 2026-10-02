@@ -1,0 +1,6 @@
+adapt_wrappers:
+  CrippleJointWrapper:
+    indices: !!python/list [0]
+    lag: &lag 200
+  LagRewardWrapper:
+    lag: *lag

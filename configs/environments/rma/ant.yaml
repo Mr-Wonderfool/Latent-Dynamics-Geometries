@@ -1,0 +1,11 @@
+env_id: Ant-v5
+render: False
+num_envs: 16
+wrappers:
+  local_env:
+    CleanObservationWrapper: {}
+    AntDynamicsWrapper:
+      required_experience_length: 2000
+    BodyFrameWrapper: {}
+    ExtractEnvFactorWrapper: {}
+  vec_env: {}

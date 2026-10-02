@@ -1,0 +1,96 @@
+agent_name: LDRAgent
+gradient_steps: 2048
+batch_size: 256
+train_freq: 2048
+gamma: 0.99
+# contrastive learning
+contrastive_start_iterations: 0
+contrastive_loss_weight: 1.0
+# required number of positives, set to 1 for normal sampling
+min_positives: 1
+# representation learning
+vae_loss_weight: 5.0
+
+reward_scale: 0.004
+capacity: 1.0e+6
+tau: 5.0e-3
+
+# number of gradient steps before updating target networks
+target_update_interval: 1
+
+# latent dropout for more robust policy
+latent_dropout_prob: 0.1
+
+# representation learning
+# KL annealing
+kl_schedule:
+  name: LinearSchedule
+  max_lr: 0.0
+  min_lr: 0.07
+  warmup_ratio: 0.0
+  end_fraction: 0.5
+n_past: 50
+latent_dim: &z_dim 3
+
+# optimizer for actor/critic/encoder/decoder
+optimizer: &default_optimizer
+  name: Adam
+  scheduler:
+    name: ConstantSchedule
+    const_val: 3.0e-4
+
+encoder:
+  policy_kwargs:
+    embed_dim: 32
+    kernel_size_list: !!python/list [8, 5, 5]
+    stride_list: !!python/list [4, 1, 1]
+    latent_log_std_min: -20.0
+    latent_log_std_max: 2.0
+
+  optimizer:
+    <<: *default_optimizer
+
+# encoder lipschitz regularization
+encoder_reg_mode: none
+
+decoder:
+  policy_kwargs:
+    name: LatentMLPFeatureExtractor
+    kwargs:
+      latent_dim: *z_dim
+      mlp_dims: !!python/list [256]
+      feature_dim: 256
+    log_std_min: -20.0
+    log_std_max: 2.0
+  optimizer:
+    <<: *default_optimizer
+
+policy:
+  n_critics: 2
+  share_feature_extractor: false
+  actor:
+    name: LatentMLPFeatureExtractor
+    kwargs:
+      latent_dim: *z_dim
+      mlp_dims: !!python/list [256]
+      feature_dim: 256
+  critic:
+    name: LatentMLPFeatureExtractor
+    kwargs:
+      latent_dim: *z_dim
+      mlp_dims: !!python/list [256]
+      feature_dim: 256
+  feature_extractor:
+    name: DummyExtractor
+    kwargs: {}
+
+pipeline:
+  debug:
+    log_dir: ../../../logs/ldr
+  train:
+    seed: 1012
+    use_gpu: True
+    render_mode: human
+    total_iterations: 1.5e+6
+  validate:
+    evaluation_interval: 100000

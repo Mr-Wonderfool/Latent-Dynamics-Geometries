@@ -1,0 +1,57 @@
+agent_name: RMAAgent
+gradient_steps: 2048
+batch_size: 256
+train_freq: 2048
+gamma: 0.99
+reward_scale: 1.0
+capacity: 1.0e+6
+tau: 5.0e-3
+
+# number of gradient steps before updating target networks
+target_update_interval: 1
+train_start_iterations: 1.0e+4
+
+# latent dim for RMA
+latent_dim: &z_dim 3
+
+# optimizer for actor and critic
+optimizer:
+  name: Adam
+  scheduler:
+    name: ConstantSchedule
+    const_val: 1.0e-4
+
+policy:
+  n_critics: 2
+  share_feature_extractor: false
+  actor:
+    name: LatentMLPFeatureExtractor
+    kwargs:
+      latent_dim: *z_dim
+      mlp_dims: !!python/list [256]
+      feature_dim: 256
+      latent_layer_norm: false
+  critic:
+    name: LatentMLPFeatureExtractor
+    kwargs:
+      latent_dim: *z_dim
+      mlp_dims: !!python/list [256]
+      feature_dim: 256
+      latent_layer_norm: false
+  feature_extractor:
+    name: EnvironmentFactorEncoder
+    kwargs:
+      # RMA specific parameters (`factor_dim` is injected on-the-fly)
+      latent_dim: *z_dim
+      mlp_dims: !!python/list [256, 128]
+
+pipeline:
+  debug:
+    log_dir: ../../../logs/rma
+  train:
+    seed: 1012
+    use_gpu: True
+    render_mode: human
+    total_iterations: 1.5e+6
+  validate:
+    evaluation_interval: 100000

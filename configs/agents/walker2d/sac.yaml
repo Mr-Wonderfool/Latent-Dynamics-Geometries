@@ -1,0 +1,47 @@
+agent_name: SACAgent
+gradient_steps: 16
+batch_size: 256
+train_freq: 1
+gamma: 0.99
+reward_scale: 1.0
+capacity: 1.0e+6
+tau: 5.0e-3
+
+# number of gradient steps before updating target networks
+target_update_interval: 1
+train_start_iterations: 1.0e+4
+
+# optimizer for actor and critic
+optimizer:
+  name: Adam
+  scheduler:
+    name: ConstantSchedule
+    const_val: 3.0e-4
+
+policy:
+  n_critics: 2
+  share_feature_extractor: false
+  actor:
+    name: MLPFeatureExtractor
+    kwargs:
+      mlp_dims: !!python/list [256]
+      feature_dim: 256
+  critic:
+    name: MLPFeatureExtractor
+    kwargs:
+      mlp_dims: !!python/list [256]
+      feature_dim: 256
+  feature_extractor:
+    name: DummyExtractor
+    kwargs: {}
+
+pipeline:
+  debug:
+    log_dir: ../../../logs/sac
+  train:
+    seed: 1012
+    use_gpu: True
+    render_mode: human
+    total_iterations: 1.5e+6
+  validate:
+    evaluation_interval: 100000

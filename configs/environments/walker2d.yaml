@@ -1,0 +1,10 @@
+env_id: Walker2d-v5
+render: False
+num_envs: 16
+wrappers:
+  local_env:
+    Walker2dDynamicsWrapper:
+      required_experience_length: 2000
+    LimitAngleTorqueWrapper: {}
+  vec_env:
+    GlobalDynamicsIDWrapper: {}

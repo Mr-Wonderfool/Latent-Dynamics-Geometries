@@ -1,0 +1,12 @@
+tqdm
+pyyaml
+tensorboard
+tensorboardX
+numpy==1.26.4
+scipy==1.15.3
+scikit-learn==1.7.2
+gymnasium[mujoco]==1.1.1
+matplotlib
+seaborn
+pandas
+cma

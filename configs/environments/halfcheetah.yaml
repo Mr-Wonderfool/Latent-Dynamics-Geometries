@@ -1,0 +1,9 @@
+env_id: HalfCheetah-v5
+render: False
+num_envs: 16
+wrappers:
+  local_env:
+    HalfCheetahDynamicsWrapper:
+      required_experience_length: 5000
+  vec_env:
+    GlobalDynamicsIDWrapper: {}

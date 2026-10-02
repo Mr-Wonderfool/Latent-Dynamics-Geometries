@@ -1,0 +1,8 @@
+name: CMAAdapt
+# total number of samples in target environment: max_iter * pop_size * episode_length
+cma_max_iters: 6
+rollout_episodes: 1
+init_std: 0.5
+# search for latent vector z
+lower_bound: 0.2
+upper_bound: 2.5

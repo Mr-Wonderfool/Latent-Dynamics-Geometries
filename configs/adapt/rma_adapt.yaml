@@ -1,0 +1,22 @@
+name: RMAAdapt
+buffer_capacity: 1.0e+5
+# number of transitions for adaptation
+total_timesteps: 4.0e+5
+# number of transitions to collect each step
+train_freq: 16
+# gradient steps taken to optimize MSE
+gradient_steps: 1
+batch_size: 256
+train_start_iterations: 1000
+
+adapt_net:
+  policy_kwargs:
+    history_len: 50
+    embed_dim: 32
+    kernel_size_list: !!python/list [8, 5, 5]
+    stride_list: !!python/list [4, 1, 1]
+  optimizer:
+    name: Adam
+    scheduler:
+      name: ConstantSchedule
+      const_val: 5.0e-4
